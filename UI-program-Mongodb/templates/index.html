@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Webhook Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        #message {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        /**
+         * Function to fetch the latest changes from the server.
+         * It sends a GET request to the '/latest_changes' endpoint,
+         * processes the JSON response, and updates the message on the page.
+         */
+
+        function fetchLatestChanges() {
+            fetch('/latest_changes') //Making a GET request to the endpoint '/latest_changes'
+                .then(response => response.json())  //Parsing the response as JSON structure.
+                .then(data => {
+                    //Updating the inner text of the 'message' div with the received message from flask.
+                    document.getElementById('message').innerText = data.message;
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        /**
+         * Event handler that runs when the window has finished loading.
+         * It calls fetchLatestChanges immediately and then sets up an interval
+         * to call it every 15 seconds to keep the fetched information up-to-date.
+         */
+
+        window.onload = function() {
+            fetchLatestChanges();
+            setInterval(fetchLatestChanges, 15000); // Fetch every 15 seconds
+        }
+    </script>
+</head>
+<body>
+    <h1>GitHub Webhook Viewer</h1>
+    <div id="message">Loading latest changes...</div>
+</body>
+</html>
